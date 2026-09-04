@@ -14,7 +14,7 @@ function Bar({
   return (
     <div>
       <div className="mb-1.5 flex justify-between text-sm">
-        <span className="text-mist">{label}</span>
+        <span className="text-muted-foreground">{label}</span>
         <span className="font-semibold">{value}</span>
       </div>
       <div className="bg-line h-2">
@@ -56,7 +56,7 @@ export function ScenarioPanel({
       <div className="wedge bg-surface border-line border p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-mist text-xs font-semibold tracking-widest uppercase">
+            <p className="text-muted-foreground text-xs font-semibold tracking-widest uppercase">
               Path {scenario.letter} · {scenario.subtitle}
             </p>
             <p className="font-display mt-1 text-2xl">
@@ -69,7 +69,7 @@ export function ScenarioPanel({
                 ? "bg-flame text-paper"
                 : scenario.stance === "Safe"
                   ? "bg-volt text-ink"
-                  : "border-line text-inverse-foreground border"
+                  : "border-line text-foreground border"
             }`}
           >
             {scenario.stance}
@@ -113,27 +113,27 @@ export function ScenarioPanel({
         <div className="border-line mt-6 grid grid-cols-3 gap-3 border-t pt-4 text-center">
           <div>
             <p className="font-display text-volt text-2xl">{m.survivalScore}</p>
-            <p className="text-mist mt-1 text-[10px] tracking-widest uppercase">Survival</p>
+            <p className="text-muted-foreground mt-1 text-[10px] tracking-widest uppercase">Survival</p>
           </div>
           <div>
             <p className="font-display text-2xl">{m.lifeDecisionScore}</p>
-            <p className="text-mist mt-1 text-[10px] tracking-widest uppercase">Life decision</p>
+            <p className="text-muted-foreground mt-1 text-[10px] tracking-widest uppercase">Life decision</p>
           </div>
           <div>
             <p className="font-display text-flame text-2xl">{riskIndex.toFixed(1)}</p>
-            <p className="text-mist mt-1 text-[10px] tracking-widest uppercase">Risk idx</p>
+            <p className="text-muted-foreground mt-1 text-[10px] tracking-widest uppercase">Risk idx</p>
           </div>
         </div>
 
         <div className="border-line mt-6 border-t pt-5">
-          <p className="text-mist text-xs font-semibold tracking-widest uppercase">
+          <p className="text-muted-foreground text-xs font-semibold tracking-widest uppercase">
             What if? · move the variables
           </p>
           <div className="mt-4 space-y-4">
             {sliders.map((s) => (
               <label key={s.key} className="block">
                 <span className="mb-1 flex justify-between text-xs">
-                  <span className="text-mist">{s.label}</span>
+                  <span className="text-muted-foreground">{s.label}</span>
                   <span className="font-semibold">
                     {s.key === "savingsBuffer"
                       ? `+${zar(levers[s.key])}`
@@ -158,14 +158,14 @@ export function ScenarioPanel({
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
         {[
           { t: "Risks", items: scenario.risks, tone: "text-flame" },
-          { t: "Challenges", items: scenario.challenges, tone: "text-mist" },
+          { t: "Challenges", items: scenario.challenges, tone: "text-muted-foreground" },
           { t: "Opportunities", items: scenario.opportunities, tone: "text-volt" },
         ].map((g) => (
           <div key={g.t} className="border-line bg-surface border p-4">
             <p className={`text-[10px] font-bold tracking-widest uppercase ${g.tone}`}>{g.t}</p>
             <ul className="mt-2 space-y-1.5 text-xs leading-relaxed">
               {g.items.map((i) => (
-                <li key={i} className="text-mist">
+                <li key={i} className="text-muted-foreground">
                   {i}
                 </li>
               ))}
@@ -176,20 +176,20 @@ export function ScenarioPanel({
 
       <div className="border-line bg-surface mt-4 grid gap-4 border p-4 sm:grid-cols-2">
         <div>
-          <p className="text-mist text-[10px] font-bold tracking-widest uppercase">
+          <p className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
             Short-term impact
           </p>
           <p className="mt-1.5 text-sm leading-relaxed">{scenario.shortTermImpact}</p>
         </div>
         <div>
-          <p className="text-mist text-[10px] font-bold tracking-widest uppercase">
+          <p className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
             Long-term potential
           </p>
           <p className="mt-1.5 text-sm leading-relaxed">{scenario.longTermPotential}</p>
         </div>
       </div>
 
-      <p className="text-mist mt-4 max-w-md text-xs leading-relaxed">
+      <p className="text-muted-foreground mt-4 max-w-md text-xs leading-relaxed">
         Estimated figures based on your inputs and South African cost data. Confidence:{" "}
         {scenario.confidence}. Not a guarantee — uncertainty is shown, never hidden.
       </p>
