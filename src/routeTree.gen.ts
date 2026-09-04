@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as SimulateRouteImport } from './routes/simulate'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const InsightsRoute = InsightsRouteImport.update({
   path: '/insights',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MethodologyRoute = MethodologyRouteImport.update({
+  id: '/methodology',
+  path: '/methodology',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SimulateRoute = SimulateRouteImport.update({
   id: '/simulate',
   path: '/simulate',
@@ -32,30 +38,34 @@ const SimulateRoute = SimulateRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
+  '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
+  '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
+  '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/insights' | '/simulate'
+  fullPaths: '/' | '/insights' | '/methodology' | '/simulate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/insights' | '/simulate'
-  id: '__root__' | '/' | '/insights' | '/simulate'
+  to: '/' | '/insights' | '/methodology' | '/simulate'
+  id: '__root__' | '/' | '/insights' | '/methodology' | '/simulate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InsightsRoute: typeof InsightsRoute
+  MethodologyRoute: typeof MethodologyRoute
   SimulateRoute: typeof SimulateRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/methodology': {
+      id: '/methodology'
+      path: '/methodology'
+      fullPath: '/methodology'
+      preLoaderRoute: typeof MethodologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/simulate': {
       id: '/simulate'
       path: '/simulate'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InsightsRoute: InsightsRoute,
+  MethodologyRoute: MethodologyRoute,
   SimulateRoute: SimulateRoute,
 }
 export const routeTree = rootRouteImport
