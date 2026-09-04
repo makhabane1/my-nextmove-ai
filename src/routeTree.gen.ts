@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as SimulateRouteImport } from './routes/simulate'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SimulateRoute = SimulateRouteImport.update({
@@ -25,27 +31,31 @@ const SimulateRoute = SimulateRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/insights': typeof InsightsRoute
   '/simulate': typeof SimulateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/insights': typeof InsightsRoute
   '/simulate': typeof SimulateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/insights': typeof InsightsRoute
   '/simulate': typeof SimulateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/simulate'
+  fullPaths: '/' | '/insights' | '/simulate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/simulate'
-  id: '__root__' | '/' | '/simulate'
+  to: '/' | '/insights' | '/simulate'
+  id: '__root__' | '/' | '/insights' | '/simulate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InsightsRoute: typeof InsightsRoute
   SimulateRoute: typeof SimulateRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/simulate': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InsightsRoute: InsightsRoute,
   SimulateRoute: SimulateRoute,
 }
 export const routeTree = rootRouteImport
