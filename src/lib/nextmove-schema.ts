@@ -2,59 +2,78 @@ import { z } from "zod";
 
 /** Client-safe schemas + types shared by the UI and the server functions. */
 
+const str = (fallback = "") => z.string().nullish().transform((v) => v ?? fallback);
+const num = (fallback = 0) =>
+  z.coerce.number().nullish().transform((v) => (typeof v === "number" && !Number.isNaN(v) ? v : fallback));
+const list = (max: number) =>
+  z
+    .array(z.string())
+    .nullish()
+    .transform((v) => (v ?? []).slice(0, max));
+
 export const followUpSchema = z.object({
-  id: z.string(),
-  question: z.string(),
-  helper: z.string(),
-  kind: z.enum(["number", "text", "choice"]),
-  suggestions: z.array(z.string()).max(6),
+  id: str("q"),
+  question: z.string().min(1),
+  helper: str(),
+  kind: z.enum(["number", "text", "choice"]).nullish().transform((v) => v ?? "text"),
+  suggestions: list(6),
 });
 
-export const interviewStepSchema = z.object({
-  readyToSimulate: z.boolean(),
-  understanding: z.string(),
-  question: followUpSchema.nullable(),
-});
+export const interviewStepSchema = z
+  .object({
+    readyToSimulate: z.boolean().nullish(),
+    understanding: str(),
+    question: followUpSchema.nullish(),
+  })
+  .transform((s) => ({
+    understanding: s.understanding,
+    question: s.question ?? null,
+    readyToSimulate: s.readyToSimulate ?? !s.question,
+  }));
 
 export const scenarioSchema = z.object({
-  id: z.string(),
-  letter: z.string(),
-  title: z.string(),
-  subtitle: z.string(),
-  city: z.string(),
-  stance: z.enum(["Safe", "Balanced", "High risk"]),
-  estimatedIncome: z.number(),
-  monthlyExpenses: z.number(),
-  rent: z.number(),
-  upfrontCost: z.number(),
-  savingsRequired: z.number(),
-  runwayMonths: z.number(),
-  survivalScore: z.number(),
-  lifeDecisionScore: z.number(),
-  confidence: z.enum(["low", "medium", "high"]),
-  risks: z.array(z.string()).max(5),
-  challenges: z.array(z.string()).max(5),
-  opportunities: z.array(z.string()).max(5),
-  shortTermImpact: z.string(),
-  longTermPotential: z.string(),
+  id: str("s"),
+  letter: str("A"),
+  title: str("Option"),
+  subtitle: str(),
+  city: str(),
+  stance: z.enum(["Safe", "Balanced", "High risk"]).nullish().transform((v) => v ?? "Balanced"),
+  estimatedIncome: num(),
+  monthlyExpenses: num(),
+  rent: num(),
+  upfrontCost: num(),
+  savingsRequired: num(),
+  runwayMonths: num(),
+  survivalScore: num(50),
+  lifeDecisionScore: num(50),
+  confidence: z.enum(["low", "medium", "high"]).nullish().transform((v) => v ?? "medium"),
+  risks: list(5),
+  challenges: list(5),
+  opportunities: list(5),
+  shortTermImpact: str(),
+  longTermPotential: str(),
 });
 
 export const simulationSchema = z.object({
-  situationSummary: z.string(),
-  assumptions: z.array(z.string()).max(6),
-  hardTruths: z.array(z.string()).max(4),
-  uncertaintyNote: z.string(),
-  scenarios: z.array(scenarioSchema).min(2).max(3),
+  situationSummary: str(),
+  assumptions: list(6),
+  hardTruths: list(4),
+  uncertaintyNote: str(
+    "These are estimates based on what you told us, not guarantees. Real costs and income can differ.",
+  ),
+  scenarios: z.array(scenarioSchema).min(1),
   plan: z
     .array(
       z.object({
-        title: z.string(),
-        detail: z.string(),
-        timeframe: z.string(),
+        title: str("Step"),
+        detail: str(),
+        timeframe: str(),
       }),
     )
-    .max(6),
+    .nullish()
+    .transform((v) => (v ?? []).slice(0, 6)),
 });
+
 
 export type FollowUp = z.infer<typeof followUpSchema>;
 export type InterviewStep = z.infer<typeof interviewStepSchema>;
