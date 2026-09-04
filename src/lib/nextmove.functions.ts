@@ -39,6 +39,7 @@ export const nextInterviewStep = createServerFn({ method: "POST" })
 
     const { output } = await generateText({
       model: provider(model),
+      temperature: 0.4,
       output: Output.object({ schema: interviewStepSchema }),
       system: `${SA_CONTEXT}
 
@@ -86,5 +87,13 @@ Never tell them which path to take.`,
       prompt: transcript(data.problem, data.answers),
     });
 
-    return output;
+    const letters = ["A", "B", "C"];
+    return {
+      ...output,
+      scenarios: output.scenarios.slice(0, 3).map((s, i) => ({
+        ...s,
+        id: `scenario-${i + 1}`,
+        letter: letters[i] ?? String(i + 1),
+      })),
+    };
   });
