@@ -42,36 +42,36 @@ export function CompareFutures({
                 {s.letter}
               </span>
               <p className="mt-2 leading-tight font-semibold">{s.title}</p>
-              <p className="text-mist mt-1 text-xs">{s.subtitle}</p>
+              <p className="text-muted-foreground mt-1 text-xs">{s.subtitle}</p>
               <div className="my-5 space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-mist">Monthly net</span>
+                  <span className="text-muted-foreground">Monthly net</span>
                   <span className="font-semibold">{zar(m.surplus)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mist">Income</span>
+                  <span className="text-muted-foreground">Income</span>
                   <span className="font-semibold">{zar(m.income)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mist">Expenses</span>
+                  <span className="text-muted-foreground">Expenses</span>
                   <span className="font-semibold">{zar(m.expenses)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mist">Upfront</span>
+                  <span className="text-muted-foreground">Upfront</span>
                   <span className="font-semibold">{zar(m.upfrontCost)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mist">Runway</span>
+                  <span className="text-muted-foreground">Runway</span>
                   <span className="font-semibold">{m.runwayMonths.toFixed(1)} mo</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mist">Survival</span>
+                  <span className="text-muted-foreground">Survival</span>
                   <span className="font-semibold">{m.survivalScore}</span>
                 </div>
               </div>
               <div className="border-line mt-auto flex items-center justify-between border-t pt-3">
                 <span className="font-display text-2xl">{m.lifeDecisionScore}</span>
-                <span className="text-mist text-[10px] tracking-widest uppercase">Life score</span>
+                <span className="text-muted-foreground text-[10px] tracking-widest uppercase">Life score</span>
               </div>
             </button>
           );
@@ -81,7 +81,7 @@ export function CompareFutures({
       <div className="border-line bg-surface mt-4 overflow-x-auto border">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-line text-mist border-b text-left text-[10px] tracking-widest uppercase">
+            <tr className="border-line text-muted-foreground border-b text-left text-[10px] tracking-widest uppercase">
               <th className="px-4 py-3 font-semibold">Trade-off</th>
               {scenarios.map((s) => (
                 <th key={s.id} className="px-4 py-3 text-right font-semibold">
@@ -106,7 +106,7 @@ export function CompareFutures({
               { label: "Confidence", get: (s: Scenario) => s.confidence },
             ].map((row) => (
               <tr key={row.label} className="border-line border-t">
-                <td className="text-mist px-4 py-3">{row.label}</td>
+                <td className="text-muted-foreground px-4 py-3">{row.label}</td>
                 {scenarios.map((s) => (
                   <td key={s.id} className="max-w-[16rem] px-4 py-3 text-right font-medium">
                     {row.get(s)}

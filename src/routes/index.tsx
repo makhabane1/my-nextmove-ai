@@ -170,7 +170,7 @@ function Home() {
               d: "Three realistic paths with Rand costs, runway, risks and scores you can pull apart.",
             },
           ].map((s) => (
-            <div key={s.n} className="border-line bg-surface border p-6">
+            <div key={s.n} className="border-line bg-inverse-foreground/5 text-inverse-foreground border p-6">
               <span className="font-display text-volt text-3xl">{s.n}</span>
               <h2 className="mt-3 text-xl tracking-tight uppercase">{s.t}</h2>
               <p className="text-mist mt-2 text-sm leading-relaxed">{s.d}</p>

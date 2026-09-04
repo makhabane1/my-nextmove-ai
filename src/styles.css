@@ -75,8 +75,9 @@
   --radius: 0px;
 
   --ink: oklch(0.17 0.02 265);
-  --surface: oklch(0.23 0.02 265);
-  --line: oklch(0.32 0.02 265);
+  --surface: oklch(0.99 0.003 100);
+  --line: oklch(0.86 0.008 265);
+
   --volt: oklch(0.94 0.2 116);
   --flame: oklch(0.68 0.2 33);
   --mist: oklch(0.64 0.02 265);
