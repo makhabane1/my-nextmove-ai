@@ -16,8 +16,8 @@ import {
 } from "../lib/nextmove-schema";
 
 export const Route = createFileRoute("/simulate")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    q: typeof search.q === "string" ? search.q : "",
+  validateSearch: (search: Record<string, unknown>): { q?: string } => ({
+    q: typeof search["q"] === "string" ? search["q"] : undefined,
   }),
   head: () => ({
     meta: [
