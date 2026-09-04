@@ -37,26 +37,60 @@ export const nextInterviewStep = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<InterviewStep> => {
     const { provider, model, SA_CONTEXT } = await gateway();
 
-    const { output } = await generateText({
-      model: provider(model),
-      output: Output.object({ schema: interviewStepSchema }),
-      system: `${SA_CONTEXT}
+    const run = () =>
+      generateText({
+        model: provider(model),
+        temperature: 0.4,
+        output: Output.object({ schema: interviewStepSchema }),
+        system: `${SA_CONTEXT}
 
 You are in the "Understand my situation" stage. Ask ONE short question at a time — never a form.
 Only ask what you genuinely need to simulate this specific decision: income, savings, monthly expenses,
 current city and target city, career/education stage, dependants or family support, debt, timeline, goals, lifestyle.
-Never ask something already answered or clearly implied. Ask at most 6 questions in total;
-after 6 answers you MUST set readyToSimulate to true.
-"understanding" is one warm sentence reflecting back what you now understand (no questions in it).
-Give 2-4 realistic South African example answers in "suggestions" (e.g. "R12 000", "About R25 000 saved", "Cape Town").
-When you have enough to simulate, set readyToSimulate true and question null.`,
-      prompt: `${transcript(data.problem, data.answers)}
+Never ask something already answered or clearly implied.
+You MUST ask at least 3 questions before simulating, and at most 6; after 6 answers set readyToSimulate true.
+"understanding" is ONE warm sentence of at most 25 words, no questions in it. Never repeat instructions back.
+"question" is at most 20 words. "helper" is at most 15 words.
+Give 2-4 short realistic South African example answers in "suggestions" (e.g. "R12 000", "About R25 000 saved", "Cape Town").
+Only when you have enough to simulate: readyToSimulate true and question null.`,
+        prompt: `${transcript(data.problem, data.answers)}
 
 Answers collected so far: ${data.answers.length}. Decide the next single question, or that you are ready to simulate.`,
-    });
+      });
 
-    return output;
+    try {
+      const { output } = await run();
+      return output;
+    } catch {
+      try {
+        const { output } = await run();
+        return output;
+      } catch {
+        // Never blank the screen: fall back to a sensible next question.
+        const asked = data.answers.length;
+        return {
+          understanding: "Thanks — a few basics will help us simulate this properly.",
+          readyToSimulate: asked >= 4,
+          question:
+            asked >= 4
+              ? null
+              : {
+                  id: `fallback-${asked}`,
+                  question: [
+                    "Which city are you in, and where are you thinking of going?",
+                    "What money comes in each month right now?",
+                    "How much do you have saved up?",
+                    "Who depends on you financially, and do you have any debt?",
+                  ][asked]!,
+                  helper: "A rough figure or answer is fine.",
+                  kind: "text" as const,
+                  suggestions: [],
+                },
+        };
+      }
+    }
   });
+
 
 /** Build the personalised simulation, comparison numbers and NextMove plan. */
 export const runSimulation = createServerFn({ method: "POST" })
@@ -86,5 +120,13 @@ Never tell them which path to take.`,
       prompt: transcript(data.problem, data.answers),
     });
 
-    return output;
+    const letters = ["A", "B", "C"];
+    return {
+      ...output,
+      scenarios: output.scenarios.slice(0, 3).map((s, i) => ({
+        ...s,
+        id: `scenario-${i + 1}`,
+        letter: letters[i] ?? String(i + 1),
+      })),
+    };
   });
