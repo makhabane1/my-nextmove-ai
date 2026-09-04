@@ -41,7 +41,7 @@ export const Route = createFileRoute("/simulate")({
 });
 
 function SimulatePage() {
-  const { q } = Route.useSearch();
+  const { q = "" } = Route.useSearch();
 
   const [problem, setProblem] = useState(q);
   const [started, setStarted] = useState(Boolean(q));
