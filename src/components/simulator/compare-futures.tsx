@@ -1,4 +1,6 @@
 import { applyLevers, zar, type Levers, type Scenario } from "../../lib/nextmove-schema";
+import { DATA_LAST_UPDATED, confidenceBadge, metricNotes } from "../../lib/methodology";
+import { AssumptionTag } from "./assumption-tag";
 
 export function CompareFutures({
   scenarios,
