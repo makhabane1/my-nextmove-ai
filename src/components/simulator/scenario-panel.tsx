@@ -114,48 +114,69 @@ export function ScenarioPanel({
             value={`${zar(m.income)}/mo`}
             pct={(m.income / Math.max(m.income, m.expenses)) * 100}
             tone="volt"
+            note={notes["income"]}
           />
           <Bar
             label="Monthly expenses"
             value={`${zar(m.expenses)}/mo`}
             pct={(m.expenses / Math.max(m.income, m.expenses)) * 100}
             tone="flame"
+            note={notes["expenses"]}
           />
-          <Bar label="Rent" value={`${zar(m.rent)}/mo`} pct={(m.rent / m.expenses) * 100} tone="volt" />
+          <Bar
+            label="Rent"
+            value={`${zar(m.rent)}/mo`}
+            pct={(m.rent / m.expenses) * 100}
+            tone="volt"
+            note={notes["rent"]}
+          />
           <Bar
             label="Upfront costs"
             value={zar(m.upfrontCost)}
             pct={(m.upfrontCost / Math.max(1, m.savingsRequired || m.upfrontCost)) * 100}
             tone="flame"
+            note={notes["upfrontCost"]}
           />
           <Bar
             label="Savings required"
             value={zar(m.savingsRequired)}
             pct={100}
             tone="volt"
+            note={notes["savingsRequired"]}
           />
           <Bar
             label="Financial runway"
             value={`${m.runwayMonths.toFixed(1)} months`}
             pct={(m.runwayMonths / 18) * 100}
             tone={m.runwayMonths < 3 ? "flame" : "volt"}
+            note={notes["runwayMonths"]}
           />
         </div>
 
         <div className="border-line mt-6 grid grid-cols-3 gap-3 border-t pt-4 text-center">
           <div>
             <p className="font-display text-volt text-2xl">{m.survivalScore}</p>
-            <p className="text-muted-foreground mt-1 text-[10px] tracking-widest uppercase">Survival</p>
+            <p className="text-muted-foreground mt-1 inline-flex items-center gap-1 text-[10px] tracking-widest uppercase">
+              Survival {notes["survivalScore"] && <AssumptionTag note={notes["survivalScore"]} label="Survival Score" />}
+            </p>
           </div>
           <div>
             <p className="font-display text-2xl">{m.lifeDecisionScore}</p>
-            <p className="text-muted-foreground mt-1 text-[10px] tracking-widest uppercase">Life decision</p>
+            <p className="text-muted-foreground mt-1 inline-flex items-center gap-1 text-[10px] tracking-widest uppercase">
+              Life decision{" "}
+              {notes["lifeDecisionScore"] && (
+                <AssumptionTag note={notes["lifeDecisionScore"]} label="Life Decision Score" />
+              )}
+            </p>
           </div>
           <div>
             <p className="font-display text-flame text-2xl">{riskIndex.toFixed(1)}</p>
-            <p className="text-muted-foreground mt-1 text-[10px] tracking-widest uppercase">Risk idx</p>
+            <p className="text-muted-foreground mt-1 inline-flex items-center gap-1 text-[10px] tracking-widest uppercase">
+              Risk idx {notes["riskIndex"] && <AssumptionTag note={notes["riskIndex"]} label="Risk index" />}
+            </p>
           </div>
         </div>
+
 
         <div className="border-line mt-6 border-t pt-5">
           <p className="text-muted-foreground text-xs font-semibold tracking-widest uppercase">
