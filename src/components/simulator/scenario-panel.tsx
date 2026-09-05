@@ -52,6 +52,8 @@ export function ScenarioPanel({
 }) {
   const m = applyLevers(scenario, levers);
   const riskIndex = Math.max(1, Math.round((100 - m.survivalScore) / 10) + 1) / 1;
+  const notes = metricNotes(scenario);
+  const badge = confidenceBadge(scenario);
 
   const sliders: { key: keyof Levers; label: string; min: number; max: number; step: number }[] = [
     { key: "incomePct", label: "Income", min: 50, max: 180, step: 5 },
