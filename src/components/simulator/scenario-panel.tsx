@@ -215,7 +215,12 @@ export function ScenarioPanel({
           { t: "Opportunities", items: scenario.opportunities, tone: "text-volt" },
         ].map((g) => (
           <div key={g.t} className="border-line bg-surface border p-4">
-            <p className={`text-[10px] font-bold tracking-widest uppercase ${g.tone}`}>{g.t}</p>
+            <p
+              className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase ${g.tone}`}
+            >
+              {g.t}
+              {g.t === "Risks" && notes["risks"] && <AssumptionTag note={notes["risks"]} label="risks" />}
+            </p>
             <ul className="mt-2 space-y-1.5 text-xs leading-relaxed">
               {g.items.map((i) => (
                 <li key={i} className="text-muted-foreground">
