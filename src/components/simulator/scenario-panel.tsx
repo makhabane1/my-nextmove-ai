@@ -92,6 +92,22 @@ export function ScenarioPanel({
           </span>
         </div>
 
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-[10px] tracking-widest uppercase">
+          <span
+            className={`px-2 py-1 font-bold ${
+              badge.tone === "volt"
+                ? "bg-volt text-ink"
+                : badge.tone === "flame"
+                  ? "bg-flame text-paper"
+                  : "border-line text-foreground border"
+            }`}
+          >
+            {badge.label}
+          </span>
+          <span className="text-muted-foreground normal-case tracking-normal">{badge.blurb}</span>
+        </div>
+
+
         <div className="mt-6 space-y-5">
           <Bar
             label="Estimated income"
