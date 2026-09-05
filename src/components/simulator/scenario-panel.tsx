@@ -20,7 +20,7 @@ function Bar({
   value: string;
   pct: number;
   tone: "volt" | "flame";
-  note?: AssumptionNote;
+  note?: AssumptionNote | undefined;
 }) {
   return (
     <div>
