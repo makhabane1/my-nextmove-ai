@@ -247,10 +247,24 @@ export function ScenarioPanel({
         </div>
       </div>
 
-      <p className="text-muted-foreground mt-4 max-w-md text-xs leading-relaxed">
-        Estimated figures based on your inputs and South African cost data. Confidence:{" "}
-        {scenario.confidence}. Not a guarantee — uncertainty is shown, never hidden.
-      </p>
+      <div className="border-line bg-surface mt-4 flex flex-wrap items-center justify-between gap-3 border p-4">
+        <p className="text-muted-foreground max-w-md text-xs leading-relaxed">
+          Estimated figures based on your inputs and South African cost data. Not a guarantee —
+          uncertainty is shown, never hidden.{" "}
+          <span className="inline-flex items-center gap-1.5">
+            Timeframes
+            {notes["timeframe"] && <AssumptionTag note={notes["timeframe"]} label="timeframes" />}
+          </span>
+        </p>
+        <div className="flex flex-col gap-1 text-xs">
+          <span className="text-muted-foreground">
+            Data last updated: <span className="font-semibold">{DATA_LAST_UPDATED}</span>
+          </span>
+          <Link to="/methodology" className="text-volt font-semibold hover:underline">
+            How we calculate this →
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
