@@ -45,6 +45,22 @@ export function CompareFutures({
               </span>
               <p className="mt-2 leading-tight font-semibold">{s.title}</p>
               <p className="text-muted-foreground mt-1 text-xs">{s.subtitle}</p>
+              {(() => {
+                const b = confidenceBadge(s);
+                return (
+                  <span
+                    className={`mt-3 self-start px-2 py-1 text-[9px] font-bold tracking-widest uppercase ${
+                      b.tone === "volt"
+                        ? "bg-volt text-ink"
+                        : b.tone === "flame"
+                          ? "bg-flame text-paper"
+                          : "border-line text-foreground border"
+                    }`}
+                  >
+                    {b.label}
+                  </span>
+                );
+              })()}
               <div className="my-5 space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Monthly net</span>
