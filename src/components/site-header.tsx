@@ -49,9 +49,14 @@ export function SiteFooter() {
         <span className="font-display text-inverse-foreground text-base">
           My NextMove <span className="text-volt">AI</span>
         </span>
-        <span>
-          Simulated insights only · not financial advice · Made in South Africa · ©{" "}
-          {new Date().getFullYear()}
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Link to="/methodology" className="hover:text-volt transition-colors">
+            How we calculate this
+          </Link>
+          <span>
+            Simulated insights only · not financial advice · Made in South Africa · ©{" "}
+            {new Date().getFullYear()}
+          </span>
         </span>
       </div>
     </footer>
