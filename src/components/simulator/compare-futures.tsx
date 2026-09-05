@@ -112,19 +112,39 @@ export function CompareFutures({
             {[
               {
                 label: "Monthly surplus",
+                noteKey: "income",
                 get: (s: Scenario) => zar(applyLevers(s, levers).surplus),
               },
               {
                 label: "Financial runway",
+                noteKey: "runwayMonths",
                 get: (s: Scenario) => `${applyLevers(s, levers).runwayMonths.toFixed(1)} mo`,
               },
-              { label: "Savings required", get: (s: Scenario) => zar(s.savingsRequired) },
-              { label: "Top risk", get: (s: Scenario) => s.risks[0] ?? "—" },
-              { label: "Long-term", get: (s: Scenario) => s.longTermPotential },
-              { label: "Confidence", get: (s: Scenario) => s.confidence },
+              {
+                label: "Savings required",
+                noteKey: "savingsRequired",
+                get: (s: Scenario) => zar(s.savingsRequired),
+              },
+              { label: "Top risk", noteKey: "risks", get: (s: Scenario) => s.risks[0] ?? "—" },
+              {
+                label: "Long-term",
+                noteKey: "lifeDecisionScore",
+                get: (s: Scenario) => s.longTermPotential,
+              },
+              { label: "Confidence", noteKey: "timeframe", get: (s: Scenario) => s.confidence },
             ].map((row) => (
               <tr key={row.label} className="border-line border-t">
-                <td className="text-muted-foreground px-4 py-3">{row.label}</td>
+                <td className="text-muted-foreground px-4 py-3">
+                  <span className="inline-flex items-center gap-1.5">
+                    {row.label}
+                    {scenarios[0] && (
+                      <AssumptionTag
+                        note={metricNotes(scenarios[0])[row.noteKey]!}
+                        label={row.label}
+                      />
+                    )}
+                  </span>
+                </td>
                 {scenarios.map((s) => (
                   <td key={s.id} className="max-w-[16rem] px-4 py-3 text-right font-medium">
                     {row.get(s)}
@@ -135,6 +155,11 @@ export function CompareFutures({
           </tbody>
         </table>
       </div>
+
+      <p className="text-muted-foreground mt-3 text-xs">
+        Cost-of-living data last updated: <span className="font-semibold">{DATA_LAST_UPDATED}</span> ·
+        simulated estimates, not financial advice.
+      </p>
     </div>
   );
 }
