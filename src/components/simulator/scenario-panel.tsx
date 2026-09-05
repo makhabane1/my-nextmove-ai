@@ -1,20 +1,34 @@
+import { Link } from "@tanstack/react-router";
+
 import { applyLevers, zar, type Levers, type Scenario } from "../../lib/nextmove-schema";
+import {
+  DATA_LAST_UPDATED,
+  confidenceBadge,
+  metricNotes,
+  type AssumptionNote,
+} from "../../lib/methodology";
+import { AssumptionTag } from "./assumption-tag";
 
 function Bar({
   label,
   value,
   pct,
   tone,
+  note,
 }: {
   label: string;
   value: string;
   pct: number;
   tone: "volt" | "flame";
+  note?: AssumptionNote;
 }) {
   return (
     <div>
-      <div className="mb-1.5 flex justify-between text-sm">
-        <span className="text-muted-foreground">{label}</span>
+      <div className="mb-1.5 flex justify-between gap-2 text-sm">
+        <span className="text-muted-foreground inline-flex items-center gap-1.5">
+          {label}
+          {note && <AssumptionTag note={note} label={label} />}
+        </span>
         <span className="font-semibold">{value}</span>
       </div>
       <div className="bg-line h-2">
