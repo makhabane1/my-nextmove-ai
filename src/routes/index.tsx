@@ -102,22 +102,30 @@ function Home() {
             </div>
             <div className="border-canvas-foreground flex flex-wrap items-center gap-3 border-t-2 px-5 py-3">
               <span className="text-mist text-xs font-semibold tracking-widest uppercase">
-                Try a real one
+                See a real example
               </span>
               <span className="ml-auto flex flex-wrap gap-2">
-                {STARTERS.slice(0, 3).map((s) => (
+                {STARTERS.map((s) => (
                   <button
-                    key={s}
+                    key={s.key}
                     type="button"
-                    onClick={() => setProblem(`I want to ${s.toLowerCase()}`)}
+                    onClick={() => {
+                      setProblem(`I want to ${s.label.toLowerCase()}`);
+                      showSample(s.key);
+                    }}
                     className="border-canvas-foreground hover:bg-inverse hover:text-inverse-foreground border px-3 py-1.5 text-xs font-semibold transition-colors"
                   >
-                    {s}
+                    {s.label}
                   </button>
                 ))}
               </span>
             </div>
           </form>
+
+          {/* CITY SELECTOR — feeds cost-of-living into the simulation */}
+          <div className="border-canvas-foreground bg-card text-card-foreground mt-6 max-w-md border p-5">
+            <CitySelect value={city} onChange={setCity} label="Where are you based?" />
+          </div>
 
           <button
             type="button"
@@ -130,22 +138,27 @@ function Home() {
             <span className="text-flame text-2xl">→</span>
           </button>
         </div>
+      </section>
 
-        {/* MARQUEE */}
-        <div className="wedge bg-inverse overflow-hidden py-4">
-          <div className="animate-marquee text-volt font-display flex text-2xl whitespace-nowrap uppercase">
-            {[0, 1].map((pass) => (
-              <span key={pass} className="flex">
-                {CITIES.map((c, i) => (
-                  <span key={c} className={`px-6 ${i % 2 ? "text-mist" : ""}`}>
-                    {c}
-                  </span>
-                ))}
-              </span>
-            ))}
+      {/* SAMPLE SIMULATION — no sign-up needed */}
+      <section id="example" className="bg-canvas text-canvas-foreground scroll-mt-4">
+        <div className="mx-auto max-w-[1440px] px-5 pb-16 sm:px-10">
+          <span className="font-display text-flame text-sm tracking-[0.2em] uppercase">
+            See an example
+          </span>
+          <h2 className="font-display mt-3 text-3xl tracking-tight uppercase sm:text-5xl">
+            A real simulation, before you type a word
+          </h2>
+          <p className="text-muted-foreground mt-3 max-w-2xl text-sm">
+            This is exactly what you get back: three paths in Rands, how long your money lasts, the
+            risk level and an honest read on each.
+          </p>
+          <div className="mt-8">
+            <SampleSimulation sample={sampleFor(sampleKey)} onPick={setSampleKey} />
           </div>
         </div>
       </section>
+
 
       {/* HOW IT WORKS */}
       <section className="bg-inverse text-inverse-foreground">
