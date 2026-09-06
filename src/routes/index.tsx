@@ -2,6 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { SiteFooter, SiteHeader } from "../components/site-header";
+import { CitySelect } from "../components/city-select";
+import { SampleSimulation } from "../components/sample-simulation";
+import { sampleFor } from "../lib/sample-simulations";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,42 +21,36 @@ export const Route = createFileRoute("/")({
         content:
           "Describe your situation in your own words. See the costs, risks and runway of every path — the decision stays yours.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Home,
 });
 
-const CITIES = [
-  "Cape Town",
-  "Johannesburg",
-  "Durban",
-  "Pretoria",
-  "Stellenbosch",
-  "Bloemfontein",
-  "Gqeberha",
-  "East London",
-  "Polokwane",
-  "Mbombela",
-];
-
 const STARTERS = [
-  "Quit my job",
-  "Change careers",
-  "Go study",
-  "Move cities",
-  "Start a business",
-  "Support my family",
+  { key: "quit", label: "Quit my job" },
+  { key: "career", label: "Change careers" },
+  { key: "study", label: "Go study" },
 ];
 
 function Home() {
   const navigate = useNavigate();
   const [problem, setProblem] = useState("");
+  const [city, setCity] = useState("");
+  const [sampleKey, setSampleKey] = useState("quit");
+
+  const showSample = (key: string) => {
+    setSampleKey(key);
+    document.getElementById("example")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const start = (text: string) => {
     const value = text.trim();
     if (!value) return;
-    navigate({ to: "/simulate", search: { q: value } });
+    navigate({ to: "/simulate", search: { q: value, city: city || undefined } });
   };
+
 
   return (
     <div className="font-body min-h-screen">
