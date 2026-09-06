@@ -94,7 +94,7 @@ function SimulatePage() {
 
   useEffect(() => {
     if (q && !ask.isPending && !question && answers.length === 0 && !simulation && !sim.isPending) {
-      ask.mutate({ problem: q, answers: [] });
+      ask.mutate({ problem: withCity(q), answers: [] });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
@@ -105,7 +105,7 @@ function SimulatePage() {
     setStarted(true);
     setAnswers([]);
     setSimulation(null);
-    ask.mutate({ problem: value, answers: [] });
+    ask.mutate({ problem: withCity(value), answers: [] });
   };
 
   const submitAnswer = (value: string) => {
@@ -114,12 +114,14 @@ function SimulatePage() {
     setAnswers(next);
     setQuestion(null);
     setDraft("");
-    ask.mutate({ problem: problem.trim(), answers: next });
+    ask.mutate({ problem: withCity(problem.trim()), answers: next });
   };
 
   const busy = ask.isPending || sim.isPending;
   const error = ask.error ?? sim.error;
   const active = simulation?.scenarios.find((s) => s.id === activeId) ?? simulation?.scenarios[0];
+  const step: 1 | 2 | 3 = simulation ? 3 : question || answers.length > 0 ? 2 : 1;
+
 
   return (
     <div className="font-body min-h-screen">
