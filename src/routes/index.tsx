@@ -2,6 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { SiteFooter, SiteHeader } from "../components/site-header";
+import { CitySelect } from "../components/city-select";
+import { SampleSimulation } from "../components/sample-simulation";
+import { sampleFor } from "../lib/sample-simulations";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,42 +21,36 @@ export const Route = createFileRoute("/")({
         content:
           "Describe your situation in your own words. See the costs, risks and runway of every path — the decision stays yours.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Home,
 });
 
-const CITIES = [
-  "Cape Town",
-  "Johannesburg",
-  "Durban",
-  "Pretoria",
-  "Stellenbosch",
-  "Bloemfontein",
-  "Gqeberha",
-  "East London",
-  "Polokwane",
-  "Mbombela",
-];
-
 const STARTERS = [
-  "Quit my job",
-  "Change careers",
-  "Go study",
-  "Move cities",
-  "Start a business",
-  "Support my family",
+  { key: "quit", label: "Quit my job" },
+  { key: "career", label: "Change careers" },
+  { key: "study", label: "Go study" },
 ];
 
 function Home() {
   const navigate = useNavigate();
   const [problem, setProblem] = useState("");
+  const [city, setCity] = useState("");
+  const [sampleKey, setSampleKey] = useState("quit");
+
+  const showSample = (key: string) => {
+    setSampleKey(key);
+    document.getElementById("example")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const start = (text: string) => {
     const value = text.trim();
     if (!value) return;
-    navigate({ to: "/simulate", search: { q: value } });
+    navigate({ to: "/simulate", search: { q: value, city: city || undefined } });
   };
+
 
   return (
     <div className="font-body min-h-screen">
@@ -105,22 +102,30 @@ function Home() {
             </div>
             <div className="border-canvas-foreground flex flex-wrap items-center gap-3 border-t-2 px-5 py-3">
               <span className="text-mist text-xs font-semibold tracking-widest uppercase">
-                Try a real one
+                See a real example
               </span>
               <span className="ml-auto flex flex-wrap gap-2">
-                {STARTERS.slice(0, 3).map((s) => (
+                {STARTERS.map((s) => (
                   <button
-                    key={s}
+                    key={s.key}
                     type="button"
-                    onClick={() => setProblem(`I want to ${s.toLowerCase()}`)}
+                    onClick={() => {
+                      setProblem(`I want to ${s.label.toLowerCase()}`);
+                      showSample(s.key);
+                    }}
                     className="border-canvas-foreground hover:bg-inverse hover:text-inverse-foreground border px-3 py-1.5 text-xs font-semibold transition-colors"
                   >
-                    {s}
+                    {s.label}
                   </button>
                 ))}
               </span>
             </div>
           </form>
+
+          {/* CITY SELECTOR — feeds cost-of-living into the simulation */}
+          <div className="border-canvas-foreground bg-card text-card-foreground mt-6 max-w-md border p-5">
+            <CitySelect value={city} onChange={setCity} label="Where are you based?" />
+          </div>
 
           <button
             type="button"
@@ -133,22 +138,27 @@ function Home() {
             <span className="text-flame text-2xl">→</span>
           </button>
         </div>
+      </section>
 
-        {/* MARQUEE */}
-        <div className="wedge bg-inverse overflow-hidden py-4">
-          <div className="animate-marquee text-volt font-display flex text-2xl whitespace-nowrap uppercase">
-            {[0, 1].map((pass) => (
-              <span key={pass} className="flex">
-                {CITIES.map((c, i) => (
-                  <span key={c} className={`px-6 ${i % 2 ? "text-mist" : ""}`}>
-                    {c}
-                  </span>
-                ))}
-              </span>
-            ))}
+      {/* SAMPLE SIMULATION — no sign-up needed */}
+      <section id="example" className="bg-canvas text-canvas-foreground scroll-mt-4">
+        <div className="mx-auto max-w-[1440px] px-5 pb-16 sm:px-10">
+          <span className="font-display text-flame text-sm tracking-[0.2em] uppercase">
+            See an example
+          </span>
+          <h2 className="font-display mt-3 text-3xl tracking-tight uppercase sm:text-5xl">
+            A real simulation, before you type a word
+          </h2>
+          <p className="text-muted-foreground mt-3 max-w-2xl text-sm">
+            This is exactly what you get back: three paths in Rands, how long your money lasts, the
+            risk level and an honest read on each.
+          </p>
+          <div className="mt-8">
+            <SampleSimulation sample={sampleFor(sampleKey)} onPick={setSampleKey} />
           </div>
         </div>
       </section>
+
 
       {/* HOW IT WORKS */}
       <section className="bg-inverse text-inverse-foreground">

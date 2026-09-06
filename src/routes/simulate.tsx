@@ -4,9 +4,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { SiteFooter, SiteHeader } from "../components/site-header";
+import { CitySelect } from "../components/city-select";
 import { CompareFutures } from "../components/simulator/compare-futures";
 import { ScenarioPanel } from "../components/simulator/scenario-panel";
+import { ResultsDisclaimer } from "../components/simulator/results-disclaimer";
+import { StepTracker } from "../components/simulator/step-tracker";
 import { nextInterviewStep, runSimulation } from "../lib/nextmove.functions";
+import { cityContextLine } from "../lib/sa-cities";
 import {
   defaultLevers,
   type FollowUp,
@@ -16,9 +20,11 @@ import {
 } from "../lib/nextmove-schema";
 
 export const Route = createFileRoute("/simulate")({
-  validateSearch: (search: Record<string, unknown>): { q?: string | undefined } => ({
+  validateSearch: (search: Record<string, unknown>): { q?: string | undefined; city?: string | undefined } => ({
     q: typeof search["q"] === "string" ? search["q"] : undefined,
+    city: typeof search["city"] === "string" ? search["city"] : undefined,
   }),
+
   head: () => ({
     meta: [
       { title: "Simulate your next move — My NextMove AI" },
@@ -41,9 +47,10 @@ export const Route = createFileRoute("/simulate")({
 });
 
 function SimulatePage() {
-  const { q = "" } = Route.useSearch();
+  const { q = "", city: cityParam = "" } = Route.useSearch();
 
   const [problem, setProblem] = useState(q);
+  const [city, setCity] = useState(cityParam);
   const [started, setStarted] = useState(Boolean(q));
   const [answers, setAnswers] = useState<QA[]>([]);
   const [question, setQuestion] = useState<FollowUp | null>(null);
@@ -52,6 +59,13 @@ function SimulatePage() {
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [activeId, setActiveId] = useState("");
   const [levers, setLevers] = useState<Levers>(defaultLevers);
+
+  /** City choice is folded into the brief so cost-of-living drives the numbers. */
+  const withCity = (text: string) => {
+    const line = cityContextLine(city);
+    return line ? `${text}\n\n${line}` : text;
+  };
+
 
   const askFn = useServerFn(nextInterviewStep);
   const simFn = useServerFn(runSimulation);
@@ -80,7 +94,7 @@ function SimulatePage() {
 
   useEffect(() => {
     if (q && !ask.isPending && !question && answers.length === 0 && !simulation && !sim.isPending) {
-      ask.mutate({ problem: q, answers: [] });
+      ask.mutate({ problem: withCity(q), answers: [] });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
@@ -91,7 +105,7 @@ function SimulatePage() {
     setStarted(true);
     setAnswers([]);
     setSimulation(null);
-    ask.mutate({ problem: value, answers: [] });
+    ask.mutate({ problem: withCity(value), answers: [] });
   };
 
   const submitAnswer = (value: string) => {
@@ -100,12 +114,14 @@ function SimulatePage() {
     setAnswers(next);
     setQuestion(null);
     setDraft("");
-    ask.mutate({ problem: problem.trim(), answers: next });
+    ask.mutate({ problem: withCity(problem.trim()), answers: next });
   };
 
   const busy = ask.isPending || sim.isPending;
   const error = ask.error ?? sim.error;
   const active = simulation?.scenarios.find((s) => s.id === activeId) ?? simulation?.scenarios[0];
+  const step: 1 | 2 | 3 = simulation ? 3 : question || answers.length > 0 ? 2 : 1;
+
 
   return (
     <div className="font-body min-h-screen">
@@ -114,7 +130,7 @@ function SimulatePage() {
       <main className="bg-canvas text-canvas-foreground">
         <div className="mx-auto max-w-[1100px] px-5 py-12 sm:px-10">
           <span className="wedge bg-ink text-inverse-foreground inline-block px-4 py-1.5 text-xs font-semibold tracking-[0.15em] uppercase">
-            Step {simulation ? "04" : question ? "02" : "01"}
+            Step {`0${step}`}
           </span>
           <h1 className="font-display mt-5 text-4xl leading-[0.95] tracking-tight uppercase sm:text-6xl">
             {simulation ? (
@@ -127,6 +143,14 @@ function SimulatePage() {
               </>
             )}
           </h1>
+
+          <StepTracker current={step} answered={answers.length} />
+
+          {simulation && (
+            <div className="mt-6">
+              <ResultsDisclaimer />
+            </div>
+          )}
 
           {/* 1 — the story */}
           {!simulation && (
@@ -141,15 +165,19 @@ function SimulatePage() {
                 placeholder="I want to move to Cape Town but I'm not sure I can afford it…"
                 className="border-ink/15 focus:border-volt mt-3 w-full resize-none border bg-transparent p-4 text-lg outline-none"
               />
+              <div className="mt-5 max-w-md">
+                <CitySelect value={city} onChange={setCity} label="Where are you based?" />
+              </div>
               <button
                 onClick={begin}
                 disabled={busy || !problem.trim()}
-                className="wedge bg-volt text-ink mt-4 px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+                className="wedge bg-volt text-ink mt-5 px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-50"
               >
                 {started ? "Restart with this" : "Start my simulation →"}
               </button>
             </div>
           )}
+
 
           {understanding && (
             <p className="border-volt bg-surface text-muted-foreground mt-6 border-l-4 p-4 text-sm">
