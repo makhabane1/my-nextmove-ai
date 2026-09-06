@@ -130,7 +130,7 @@ function SimulatePage() {
       <main className="bg-canvas text-canvas-foreground">
         <div className="mx-auto max-w-[1100px] px-5 py-12 sm:px-10">
           <span className="wedge bg-ink text-inverse-foreground inline-block px-4 py-1.5 text-xs font-semibold tracking-[0.15em] uppercase">
-            Step {simulation ? "04" : question ? "02" : "01"}
+            Step {`0${step}`}
           </span>
           <h1 className="font-display mt-5 text-4xl leading-[0.95] tracking-tight uppercase sm:text-6xl">
             {simulation ? (
@@ -143,6 +143,14 @@ function SimulatePage() {
               </>
             )}
           </h1>
+
+          <StepTracker current={step} answered={answers.length} />
+
+          {simulation && (
+            <div className="mt-6">
+              <ResultsDisclaimer />
+            </div>
+          )}
 
           {/* 1 — the story */}
           {!simulation && (
@@ -157,15 +165,19 @@ function SimulatePage() {
                 placeholder="I want to move to Cape Town but I'm not sure I can afford it…"
                 className="border-ink/15 focus:border-volt mt-3 w-full resize-none border bg-transparent p-4 text-lg outline-none"
               />
+              <div className="mt-5 max-w-md">
+                <CitySelect value={city} onChange={setCity} label="Where are you based?" />
+              </div>
               <button
                 onClick={begin}
                 disabled={busy || !problem.trim()}
-                className="wedge bg-volt text-ink mt-4 px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+                className="wedge bg-volt text-ink mt-5 px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-50"
               >
                 {started ? "Restart with this" : "Start my simulation →"}
               </button>
             </div>
           )}
+
 
           {understanding && (
             <p className="border-volt bg-surface text-muted-foreground mt-6 border-l-4 p-4 text-sm">
