@@ -47,9 +47,10 @@ export const Route = createFileRoute("/simulate")({
 });
 
 function SimulatePage() {
-  const { q = "" } = Route.useSearch();
+  const { q = "", city: cityParam = "" } = Route.useSearch();
 
   const [problem, setProblem] = useState(q);
+  const [city, setCity] = useState(cityParam);
   const [started, setStarted] = useState(Boolean(q));
   const [answers, setAnswers] = useState<QA[]>([]);
   const [question, setQuestion] = useState<FollowUp | null>(null);
@@ -58,6 +59,13 @@ function SimulatePage() {
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [activeId, setActiveId] = useState("");
   const [levers, setLevers] = useState<Levers>(defaultLevers);
+
+  /** City choice is folded into the brief so cost-of-living drives the numbers. */
+  const withCity = (text: string) => {
+    const line = cityContextLine(city);
+    return line ? `${text}\n\n${line}` : text;
+  };
+
 
   const askFn = useServerFn(nextInterviewStep);
   const simFn = useServerFn(runSimulation);
