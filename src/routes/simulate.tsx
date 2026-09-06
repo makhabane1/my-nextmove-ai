@@ -4,9 +4,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { SiteFooter, SiteHeader } from "../components/site-header";
+import { CitySelect } from "../components/city-select";
 import { CompareFutures } from "../components/simulator/compare-futures";
 import { ScenarioPanel } from "../components/simulator/scenario-panel";
+import { ResultsDisclaimer } from "../components/simulator/results-disclaimer";
+import { StepTracker } from "../components/simulator/step-tracker";
 import { nextInterviewStep, runSimulation } from "../lib/nextmove.functions";
+import { cityContextLine } from "../lib/sa-cities";
 import {
   defaultLevers,
   type FollowUp,
@@ -16,9 +20,11 @@ import {
 } from "../lib/nextmove-schema";
 
 export const Route = createFileRoute("/simulate")({
-  validateSearch: (search: Record<string, unknown>): { q?: string | undefined } => ({
+  validateSearch: (search: Record<string, unknown>): { q?: string | undefined; city?: string | undefined } => ({
     q: typeof search["q"] === "string" ? search["q"] : undefined,
+    city: typeof search["city"] === "string" ? search["city"] : undefined,
   }),
+
   head: () => ({
     meta: [
       { title: "Simulate your next move — My NextMove AI" },
