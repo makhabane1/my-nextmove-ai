@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InsightsRouteImport } from './routes/insights'
-import { Route as MentorsRouteImport } from './routes/mentors'
 import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as SimulateRouteImport } from './routes/simulate'
+import { Route as MentorsIndexRouteImport } from './routes/mentors.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,11 +23,6 @@ const IndexRoute = IndexRouteImport.update({
 const InsightsRoute = InsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MentorsRoute = MentorsRouteImport.update({
-  id: '/mentors',
-  path: '/mentors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MethodologyRoute = MethodologyRouteImport.update({
@@ -40,43 +35,49 @@ const SimulateRoute = SimulateRouteImport.update({
   path: '/simulate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentorsIndexRoute = MentorsIndexRouteImport.update({
+  id: '/mentors/',
+  path: '/mentors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
-  '/mentors': typeof MentorsRoute
   '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/': typeof MentorsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
-  '/mentors': typeof MentorsRoute
   '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
+  '/mentors': typeof MentorsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
-  '/mentors': typeof MentorsRoute
   '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/': typeof MentorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/insights' | '/mentors' | '/methodology' | '/simulate'
+  fullPaths: '/' | '/insights' | '/methodology' | '/simulate' | '/mentors/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/insights' | '/mentors' | '/methodology' | '/simulate'
-  id: '__root__' | '/' | '/insights' | '/mentors' | '/methodology' | '/simulate'
+  to: '/' | '/insights' | '/methodology' | '/simulate' | '/mentors'
+  id:
+    '__root__' | '/' | '/insights' | '/methodology' | '/simulate' | '/mentors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InsightsRoute: typeof InsightsRoute
-  MentorsRoute: typeof MentorsRoute
   MethodologyRoute: typeof MethodologyRoute
   SimulateRoute: typeof SimulateRoute
+  MentorsIndexRoute: typeof MentorsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -95,13 +96,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mentors': {
-      id: '/mentors'
-      path: '/mentors'
-      fullPath: '/mentors'
-      preLoaderRoute: typeof MentorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/methodology': {
       id: '/methodology'
       path: '/methodology'
@@ -116,15 +110,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SimulateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentors/': {
+      id: '/mentors/'
+      path: '/mentors'
+      fullPath: '/mentors/'
+      preLoaderRoute: typeof MentorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InsightsRoute: InsightsRoute,
-  MentorsRoute: MentorsRoute,
   MethodologyRoute: MethodologyRoute,
   SimulateRoute: SimulateRoute,
+  MentorsIndexRoute: MentorsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
