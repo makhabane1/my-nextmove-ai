@@ -14,6 +14,7 @@ import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as SimulateRouteImport } from './routes/simulate'
 import { Route as MentorsIndexRouteImport } from './routes/mentors.index'
+import { Route as MentorsMentorIdRouteImport } from './routes/mentors.$mentorId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,12 +41,18 @@ const MentorsIndexRoute = MentorsIndexRouteImport.update({
   path: '/mentors/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentorsMentorIdRoute = MentorsMentorIdRouteImport.update({
+  id: '/mentors/$mentorId',
+  path: '/mentors/$mentorId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
   '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/$mentorId': typeof MentorsMentorIdRoute
   '/mentors/': typeof MentorsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/insights': typeof InsightsRoute
   '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/$mentorId': typeof MentorsMentorIdRoute
   '/mentors': typeof MentorsIndexRoute
 }
 export interface FileRoutesById {
@@ -61,15 +69,34 @@ export interface FileRoutesById {
   '/insights': typeof InsightsRoute
   '/methodology': typeof MethodologyRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/$mentorId': typeof MentorsMentorIdRoute
   '/mentors/': typeof MentorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/insights' | '/methodology' | '/simulate' | '/mentors/'
+  fullPaths:
+    | '/'
+    | '/insights'
+    | '/methodology'
+    | '/simulate'
+    | '/mentors/$mentorId'
+    | '/mentors/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/insights' | '/methodology' | '/simulate' | '/mentors'
+  to:
+    | '/'
+    | '/insights'
+    | '/methodology'
+    | '/simulate'
+    | '/mentors/$mentorId'
+    | '/mentors'
   id:
-    '__root__' | '/' | '/insights' | '/methodology' | '/simulate' | '/mentors/'
+    | '__root__'
+    | '/'
+    | '/insights'
+    | '/methodology'
+    | '/simulate'
+    | '/mentors/$mentorId'
+    | '/mentors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +104,7 @@ export interface RootRouteChildren {
   InsightsRoute: typeof InsightsRoute
   MethodologyRoute: typeof MethodologyRoute
   SimulateRoute: typeof SimulateRoute
+  MentorsMentorIdRoute: typeof MentorsMentorIdRoute
   MentorsIndexRoute: typeof MentorsIndexRoute
 }
 
@@ -117,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MentorsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentors/$mentorId': {
+      id: '/mentors/$mentorId'
+      path: '/mentors/$mentorId'
+      fullPath: '/mentors/$mentorId'
+      preLoaderRoute: typeof MentorsMentorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   InsightsRoute: InsightsRoute,
   MethodologyRoute: MethodologyRoute,
   SimulateRoute: SimulateRoute,
+  MentorsMentorIdRoute: MentorsMentorIdRoute,
   MentorsIndexRoute: MentorsIndexRoute,
 }
 export const routeTree = rootRouteImport
