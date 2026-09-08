@@ -52,7 +52,7 @@ export function MentorCard({
         <span className="text-muted-foreground text-xs">per session</span>
         <span
           className={`ml-auto text-xs font-semibold tracking-[0.12em] uppercase ${
-            mentor.availability === "Available this week" ? "text-volt-ink" : "text-muted-foreground"
+            mentor.availability === "Available this week" ? "text-foreground" : "text-muted-foreground"
           }`}
         >
           {mentor.availability}

@@ -9,7 +9,7 @@ import { MentorCard } from "../components/mentors/mentor-card";
 import { MENTORS, MENTOR_CATEGORIES, findMentor } from "../lib/mentors";
 import { matchMentors } from "../lib/marketplace.functions";
 
-export const Route = createFileRoute("/mentors")({
+export const Route = createFileRoute("/mentors/")({
   head: () => ({
     meta: [
       { title: "Find Your NextMove Mentor — My NextMove AI" },
