@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InsightsRouteImport } from './routes/insights'
-import { Route as MentorsRouteImport } from './routes/mentors'
+import { Route as MentorDashboardRouteImport } from './routes/mentor-dashboard'
 import { Route as MethodologyRouteImport } from './routes/methodology'
+import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as SimulateRouteImport } from './routes/simulate'
+import { Route as MentorsIndexRouteImport } from './routes/mentors.index'
+import { Route as MentorsMentorIdRouteImport } from './routes/mentors.$mentorId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,9 +28,9 @@ const InsightsRoute = InsightsRouteImport.update({
   path: '/insights',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MentorsRoute = MentorsRouteImport.update({
-  id: '/mentors',
-  path: '/mentors',
+const MentorDashboardRoute = MentorDashboardRouteImport.update({
+  id: '/mentor-dashboard',
+  path: '/mentor-dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MethodologyRoute = MethodologyRouteImport.update({
@@ -35,48 +38,100 @@ const MethodologyRoute = MethodologyRouteImport.update({
   path: '/methodology',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OpportunitiesRoute = OpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SimulateRoute = SimulateRouteImport.update({
   id: '/simulate',
   path: '/simulate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorsIndexRoute = MentorsIndexRouteImport.update({
+  id: '/mentors/',
+  path: '/mentors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorsMentorIdRoute = MentorsMentorIdRouteImport.update({
+  id: '/mentors/$mentorId',
+  path: '/mentors/$mentorId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
-  '/mentors': typeof MentorsRoute
+  '/mentor-dashboard': typeof MentorDashboardRoute
   '/methodology': typeof MethodologyRoute
+  '/opportunities': typeof OpportunitiesRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/$mentorId': typeof MentorsMentorIdRoute
+  '/mentors/': typeof MentorsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
-  '/mentors': typeof MentorsRoute
+  '/mentor-dashboard': typeof MentorDashboardRoute
   '/methodology': typeof MethodologyRoute
+  '/opportunities': typeof OpportunitiesRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/$mentorId': typeof MentorsMentorIdRoute
+  '/mentors': typeof MentorsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/insights': typeof InsightsRoute
-  '/mentors': typeof MentorsRoute
+  '/mentor-dashboard': typeof MentorDashboardRoute
   '/methodology': typeof MethodologyRoute
+  '/opportunities': typeof OpportunitiesRoute
   '/simulate': typeof SimulateRoute
+  '/mentors/$mentorId': typeof MentorsMentorIdRoute
+  '/mentors/': typeof MentorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/insights' | '/mentors' | '/methodology' | '/simulate'
+  fullPaths:
+    | '/'
+    | '/insights'
+    | '/mentor-dashboard'
+    | '/methodology'
+    | '/opportunities'
+    | '/simulate'
+    | '/mentors/$mentorId'
+    | '/mentors/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/insights' | '/mentors' | '/methodology' | '/simulate'
-  id: '__root__' | '/' | '/insights' | '/mentors' | '/methodology' | '/simulate'
+  to:
+    | '/'
+    | '/insights'
+    | '/mentor-dashboard'
+    | '/methodology'
+    | '/opportunities'
+    | '/simulate'
+    | '/mentors/$mentorId'
+    | '/mentors'
+  id:
+    | '__root__'
+    | '/'
+    | '/insights'
+    | '/mentor-dashboard'
+    | '/methodology'
+    | '/opportunities'
+    | '/simulate'
+    | '/mentors/$mentorId'
+    | '/mentors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InsightsRoute: typeof InsightsRoute
-  MentorsRoute: typeof MentorsRoute
+  MentorDashboardRoute: typeof MentorDashboardRoute
   MethodologyRoute: typeof MethodologyRoute
+  OpportunitiesRoute: typeof OpportunitiesRoute
   SimulateRoute: typeof SimulateRoute
+  MentorsMentorIdRoute: typeof MentorsMentorIdRoute
+  MentorsIndexRoute: typeof MentorsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -95,11 +150,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mentors': {
-      id: '/mentors'
-      path: '/mentors'
-      fullPath: '/mentors'
-      preLoaderRoute: typeof MentorsRouteImport
+    '/mentor-dashboard': {
+      id: '/mentor-dashboard'
+      path: '/mentor-dashboard'
+      fullPath: '/mentor-dashboard'
+      preLoaderRoute: typeof MentorDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/methodology': {
@@ -109,11 +164,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MethodologyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/opportunities': {
+      id: '/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/simulate': {
       id: '/simulate'
       path: '/simulate'
       fullPath: '/simulate'
       preLoaderRoute: typeof SimulateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentors/': {
+      id: '/mentors/'
+      path: '/mentors'
+      fullPath: '/mentors/'
+      preLoaderRoute: typeof MentorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentors/$mentorId': {
+      id: '/mentors/$mentorId'
+      path: '/mentors/$mentorId'
+      fullPath: '/mentors/$mentorId'
+      preLoaderRoute: typeof MentorsMentorIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -122,9 +198,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InsightsRoute: InsightsRoute,
-  MentorsRoute: MentorsRoute,
+  MentorDashboardRoute: MentorDashboardRoute,
   MethodologyRoute: MethodologyRoute,
+  OpportunitiesRoute: OpportunitiesRoute,
   SimulateRoute: SimulateRoute,
+  MentorsMentorIdRoute: MentorsMentorIdRoute,
+  MentorsIndexRoute: MentorsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
