@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { SiteFooter, SiteHeader } from "../components/site-header";
-import { readBookings, type Booking } from "../lib/bookings";
+import { Link } from "@tanstack/react-router";
+import { useAuth } from "../hooks/use-auth";
+import { claimMentor, getMyMentorId, readBookings, type Booking } from "../lib/bookings";
 import { MENTORS, zarPrice } from "../lib/mentors";
 
 export const Route = createFileRoute("/mentor-dashboard")({
@@ -29,13 +31,43 @@ export const Route = createFileRoute("/mentor-dashboard")({
 const TABS = ["Bookings", "Earnings", "Messages", "Reviews", "Availability", "Profile"] as const;
 
 function MentorDashboard() {
-  // Demo: sign in as the first mentor in the directory.
+  const { user, ready } = useAuth();
   const [mentorId, setMentorId] = useState(MENTORS[0]!.id);
+  const [claimed, setClaimed] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
   const mentor = MENTORS.find((m) => m.id === mentorId)!;
   const [tab, setTab] = useState<(typeof TABS)[number]>("Bookings");
   const [all, setAll] = useState<Booking[]>([]);
 
-  useEffect(() => setAll(readBookings()), []);
+  useEffect(() => {
+    if (!user) return;
+    getMyMentorId().then((id) => {
+      setClaimed(id);
+      if (id) setMentorId(id);
+    });
+  }, [user?.id]);
+  useEffect(() => {
+    if (!user || !claimed) return setAll([]);
+    readBookings(claimed).then(setAll).catch((e: Error) => setErr(e.message));
+  }, [user?.id, claimed]);
+
+  if (ready && !user) {
+    return (
+      <div className="font-body min-h-screen">
+        <SiteHeader />
+        <main className="bg-canvas text-canvas-foreground">
+          <div className="mx-auto max-w-[700px] px-5 py-16 sm:px-10">
+            <h1 className="font-display text-3xl tracking-tight uppercase sm:text-5xl">Mentor dashboard</h1>
+            <p className="text-muted-foreground mt-3">Sign in to manage your mentor profile and bookings.</p>
+            <Link to="/auth" search={{ next: "/mentor-dashboard" }} className="wedge bg-volt text-ink mt-6 inline-block px-6 py-3 text-sm font-semibold">
+              Sign in →
+            </Link>
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
   const mine = all.filter((b) => b.mentorId === mentorId);
   const paid = mine.filter((b) => b.paymentStatus === "Paid (demo)");
   const earnings = paid.reduce((s, b) => s + b.price, 0);
@@ -55,7 +87,7 @@ function MentorDashboard() {
 
           <label className="mt-5 block max-w-xs">
             <span className="text-muted-foreground text-xs font-semibold tracking-[0.15em] uppercase">
-              Viewing as (demo)
+              {claimed ? "Your mentor profile" : "Claim your mentor profile"}
             </span>
             <select
               value={mentorId}
@@ -68,6 +100,17 @@ function MentorDashboard() {
                 </option>
               ))}
             </select>
+            {claimed !== mentorId && (
+              <button
+                onClick={() =>
+                  claimMentor(mentorId).then(() => { setErr(null); setClaimed(mentorId); }).catch((e: Error) => setErr(e.message))
+                }
+                className="wedge bg-volt text-ink mt-3 px-4 py-2 text-xs font-semibold"
+              >
+                This is me →
+              </button>
+            )}
+            {err && <p className="text-flame mt-2 text-sm">{err}</p>}
           </label>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-4">
@@ -157,7 +200,7 @@ function MentorDashboard() {
                 <h2 className="font-display text-2xl tracking-tight uppercase">Reviews</h2>
                 {reviews.length === 0 ? (
                   <p className="text-muted-foreground mt-3 text-sm">
-                    No session reviews yet on this device.
+                    No session reviews yet.
                   </p>
                 ) : (
                   <ul className="mt-5 space-y-3 text-sm">
