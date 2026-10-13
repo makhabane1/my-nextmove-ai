@@ -14,13 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          created_at: string
+          id: string
+          mentor_id: string
+          mentor_name: string
+          note: string
+          payment_status: string
+          price: number
+          review_rating: number | null
+          review_text: string | null
+          slot: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mentor_id: string
+          mentor_name: string
+          note?: string
+          payment_status?: string
+          price: number
+          review_rating?: number | null
+          review_text?: string | null
+          slot: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mentor_id?: string
+          mentor_name?: string
+          note?: string
+          payment_status?: string
+          price?: number
+          review_rating?: number | null
+          review_text?: string | null
+          slot?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_accounts: {
+        Row: {
+          created_at: string
+          mentor_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          mentor_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          mentor_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_mentor_for: { Args: { _mentor_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
