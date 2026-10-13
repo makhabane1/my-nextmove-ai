@@ -10,7 +10,7 @@ export type Booking = {
   note: string;
   paymentStatus: "Pending payment" | "Paid (demo)";
   createdAt: string;
-  review?: { rating: number; text: string };
+  review?: { rating: number; text: string } | undefined;
 };
 
 type Row = {
