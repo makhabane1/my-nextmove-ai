@@ -18,11 +18,11 @@ export function SiteHeader() {
           <Link to="/simulate" className="hover:text-volt transition-colors">
             Simulate
           </Link>
-          <Link to="/simulate" hash="compare" className="hover:text-volt transition-colors">
-            Compare
+          <Link to="/mentors" className="hover:text-volt transition-colors">
+            Mentors
           </Link>
-          <Link to="/simulate" hash="plan" className="hover:text-volt transition-colors">
-            Your Plan
+          <Link to="/opportunities" className="hover:text-volt transition-colors">
+            Opportunities
           </Link>
           <Link to="/insights" className="hover:text-volt transition-colors">
             SA Insights
@@ -50,6 +50,15 @@ export function SiteFooter() {
           My NextMove <span className="text-volt">AI</span>
         </span>
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Link to="/mentors" className="hover:text-volt transition-colors">
+            Mentors
+          </Link>
+          <Link to="/mentor-dashboard" className="hover:text-volt transition-colors">
+            For mentors
+          </Link>
+          <Link to="/opportunities" className="hover:text-volt transition-colors">
+            Opportunities
+          </Link>
           <Link to="/methodology" className="hover:text-volt transition-colors">
             How we calculate this
           </Link>
