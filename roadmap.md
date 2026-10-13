@@ -21,4 +21,4 @@
 - [ ] "Your Next 90-Day Plan"
 
 ## Later
-- [ ] Cloud backend + tables (users/profiles, mentors, bookings, opportunities) once UI is settled
+- [x] Cloud backend: bookings + mentor profile claims saved online, sign-in added

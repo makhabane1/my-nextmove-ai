@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { SiteFooter, SiteHeader } from "../components/site-header";
+import { useAuth } from "../hooks/use-auth";
 import { addBooking, addReview, markPaid, readBookings, type Booking } from "../lib/bookings";
 import { findMentor, initials, zarPrice } from "../lib/mentors";
 
@@ -36,27 +37,36 @@ export const Route = createFileRoute("/mentors/$mentorId")({
 
 function MentorProfile() {
   const { mentor } = Route.useLoaderData();
+  const { user, ready } = useAuth();
   const [slot, setSlot] = useState(mentor.slots[0] ?? "");
   const [note, setNote] = useState("");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
+  const [err, setErr] = useState<string | null>(null);
 
-  const refresh = () => setBookings(readBookings().filter((b) => b.mentorId === mentor.id));
-  useEffect(refresh, [mentor.id]);
+  const refresh = () => {
+    if (!user) return setBookings([]);
+    readBookings(mentor.id)
+      .then((list) => setBookings(list.filter((b) => b.mentorId === mentor.id)))
+      .catch((e: Error) => setErr(e.message));
+  };
+  useEffect(refresh, [mentor.id, user?.id]);
+
+  const run = (p: Promise<void>) =>
+    p.then(() => { setErr(null); refresh(); }).catch((e: Error) => setErr(e.message));
 
   const book = () => {
     if (!slot) return;
-    addBooking({
-      mentorId: mentor.id,
-      mentorName: mentor.name,
-      slot,
-      price: mentor.pricePerSession,
-      note,
-      paymentStatus: "Pending payment",
-    });
-    setNote("");
-    refresh();
+    run(
+      addBooking({
+        mentorId: mentor.id,
+        mentorName: mentor.name,
+        slot,
+        price: mentor.pricePerSession,
+        note,
+      }).then(() => setNote("")),
+    );
   };
 
   return (
@@ -124,13 +134,24 @@ function MentorProfile() {
                 className="border-ink/15 focus:border-volt mt-2 w-full border bg-transparent p-3 outline-none"
               />
             </label>
+            {ready && !user ? (
+              <Link
+                to="/auth"
+                search={{ next: `/mentors/${mentor.id}` }}
+                className="wedge bg-volt text-ink mt-5 inline-block px-6 py-3 text-sm font-semibold"
+              >
+                Sign in to book →
+              </Link>
+            ) : (
             <button
               onClick={book}
-              disabled={!slot}
+              disabled={!slot || !user}
               className="wedge bg-volt text-ink mt-5 px-6 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-50"
             >
               Book {slot || "a session"} →
             </button>
+            )}
+            {err && <p className="border-flame text-flame mt-4 border-l-4 p-3 text-sm">{err}</p>}
             <p className="text-muted-foreground mt-3 text-xs">
               Payments and video calls are placeholders in this preview — nothing is charged.
             </p>
@@ -157,8 +178,7 @@ function MentorProfile() {
                       {b.paymentStatus === "Pending payment" && (
                         <button
                           onClick={() => {
-                            markPaid(b.id);
-                            refresh();
+                            run(markPaid(b.id));
                           }}
                           className="wedge bg-volt text-ink px-4 py-2 text-xs font-semibold"
                         >
@@ -203,9 +223,7 @@ function MentorProfile() {
                           <button
                             onClick={() => {
                               if (!reviewText.trim()) return;
-                              addReview(b.id, rating, reviewText.trim());
-                              setReviewText("");
-                              refresh();
+                              run(addReview(b.id, rating, reviewText.trim()).then(() => setReviewText("")));
                             }}
                             className="wedge bg-volt text-ink px-4 py-2 text-xs font-semibold"
                           >
