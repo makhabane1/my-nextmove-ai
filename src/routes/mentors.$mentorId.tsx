@@ -36,27 +36,36 @@ export const Route = createFileRoute("/mentors/$mentorId")({
 
 function MentorProfile() {
   const { mentor } = Route.useLoaderData();
+  const { user, ready } = useAuth();
   const [slot, setSlot] = useState(mentor.slots[0] ?? "");
   const [note, setNote] = useState("");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
+  const [err, setErr] = useState<string | null>(null);
 
-  const refresh = () => setBookings(readBookings().filter((b) => b.mentorId === mentor.id));
-  useEffect(refresh, [mentor.id]);
+  const refresh = () => {
+    if (!user) return setBookings([]);
+    readBookings(mentor.id)
+      .then((list) => setBookings(list.filter((b) => b.mentorId === mentor.id)))
+      .catch((e: Error) => setErr(e.message));
+  };
+  useEffect(refresh, [mentor.id, user?.id]);
+
+  const run = (p: Promise<void>) =>
+    p.then(() => { setErr(null); refresh(); }).catch((e: Error) => setErr(e.message));
 
   const book = () => {
     if (!slot) return;
-    addBooking({
-      mentorId: mentor.id,
-      mentorName: mentor.name,
-      slot,
-      price: mentor.pricePerSession,
-      note,
-      paymentStatus: "Pending payment",
-    });
-    setNote("");
-    refresh();
+    run(
+      addBooking({
+        mentorId: mentor.id,
+        mentorName: mentor.name,
+        slot,
+        price: mentor.pricePerSession,
+        note,
+      }).then(() => setNote("")),
+    );
   };
 
   return (
